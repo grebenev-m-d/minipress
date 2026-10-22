@@ -1,0 +1,14 @@
+{{define "title"}}{{.Title}} - Minipress{{end}}
+{{define "bodyclass"}}page-landing{{end}}
+{{define "main"}}
+<header class="site-header">
+  <a class="brand" href="/">Minipress</a>
+  <button class="theme-toggle" type="button" data-theme-toggle>Темная</button>
+</header>
+<main class="landing error-page">
+  <p class="error-code">{{.Code}}</p>
+  <h1>{{.Title}}</h1>
+  <p class="lead">{{.Message}}</p>
+  <p><a class="btn btn-quiet" href="/">Home</a></p>
+</main>
+{{end}}

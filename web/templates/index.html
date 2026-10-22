@@ -1,0 +1,42 @@
+{{define "title"}}Minipress - Markdown articles{{end}}
+{{define "bodyclass"}}page-landing{{end}}
+{{define "main"}}
+<header class="site-header">
+  <a class="brand" href="/">Minipress</a>
+  <button class="theme-toggle" type="button" data-theme-toggle>Темная</button>
+</header>
+
+<main class="landing">
+  <h1>Пишите в формате Markdown.<br>И делитесь ссылкой.</h1>
+  <p class="lead">Небольшой редактор статей. Регистрация не требуется: к каждой статье прилагаются две ссылки:
+    общедоступная для читателей и
+    скрытая для редактирования.</p>
+
+  <form action="/create" method="post">
+    <button class="btn" type="submit">Новая статья</button>
+  </form>
+
+  <ol class="steps">
+    <li>
+      <span class="step-num">01</span>
+      <h2>Создать статью</h2>
+      <p>Нажмите кнопку, и вы окажетесь в редакторе. Ваш текст сохраняется автоматически по мере ввода.</p>
+    </li>
+    <li>
+      <span class="step-num">02</span>
+      <h2>Сохраните секретную ссылку</h2>
+      <p>Это единственный способ вернуться к редактированию. Если вы его потеряете, доступ будет безвозвратно утерян.
+      </p>
+    </li>
+    <li>
+      <span class="step-num">03</span>
+      <h2>Опубликуйте</h2>
+      <p>Пока статья находится в статусе черновика, читатели видят сообщение "not found". Измените статус, и публичная
+        ссылка заработает.
+      </p>
+    </li>
+  </ol>
+
+  <p class="fineprint">Пустые черновики и неиспользуемые изображения удаляются автоматически раз в сутки.</p>
+</main>
+{{end}}

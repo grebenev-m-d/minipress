@@ -1,0 +1,95 @@
+{{define "title"}}{{if .Page.Title}}{{.Page.Title}}{{else}}New article{{end}} - editor{{end}}
+{{define "meta"}}
+<meta name="htmx-config"
+  content='{"includeIndicatorStyles":false,"allowEval":false,"historyEnabled":false,"selfRequestsOnly":true}'>{{end}}
+{{define "bodyclass"}}page-editor{{end}}
+{{define "main"}}
+<header class="bar">
+  <a class="brand" href="/">Minipress</a>
+
+  <p class="save-state" id="save-state" data-state="saved" role="status" aria-live="polite">Сохранено</p>
+
+  <fieldset class="segmented" aria-label="Article status">
+    <label><input type="radio" name="is_published" value="false" form="editor" {{if not
+        .Page.IsPublished}}checked{{end}}><span>Черновик</span></label>
+    <label><input type="radio" name="is_published" value="true" form="editor" {{if
+        .Page.IsPublished}}checked{{end}}><span>Публично</span></label>
+  </fieldset>
+
+  <button class="btn btn-quiet" type="button" id="open-links">Ссылки</button>
+  <button class="theme-toggle" type="button" data-theme-toggle>Темная</button>
+</header>
+
+<div class="tabs" role="tablist">
+  <button type="button" role="tab" data-pane="write" aria-selected="true">Написать</button>
+  <button type="button" role="tab" data-pane="preview" aria-selected="false">Предварительный просмотр</button>
+</div>
+
+<div class="workspace" id="workspace" data-pane="write">
+  <section class="pane pane-write" aria-label="Editor">
+    <form id="editor" autocomplete="off" hx-post="/update/{{.Page.EditToken}}"
+      hx-trigger="input delay:1500ms, change from:input[name='is_published'], retry" hx-swap="none"
+      hx-sync="this:queue last" data-upload-url="/upload/{{.Page.EditToken}}">
+      <textarea class="field-title" name="title" rows="1" placeholder="Название" maxlength="200"
+        aria-label="Title">{{.Page.Title}}</textarea>
+      <input class="field-author" type="text" name="author" value="{{.Page.Author}}" placeholder="Автор" maxlength="80"
+        aria-label="Author">
+
+      <textarea id="content" name="content" spellcheck="true"
+        placeholder="Начните писать. Вставьте изображение, перетащив его курсором или вставив из буфера обмена.">{{.Page.Content}}</textarea>
+    </form>
+  </section>
+
+  <section class="pane pane-preview" aria-label="Preview" hx-post="/preview/{{.Page.EditToken}}" hx-include="#editor"
+    hx-trigger="input from:#editor delay:300ms, retry from:#editor" hx-target="#preview" hx-swap="innerHTML"
+    hx-sync="this:replace">
+    <p class="pane-label">Предпросмотр · <span id="reading-time">~{{.ReadingTime}}</span> мин:</p>
+    <div class="article-body" id="preview">{{.Preview}}</div>
+  </section>
+</div>
+
+<dialog id="links-dialog" class="dialog">
+  <h2>Article links</h2>
+
+  <div class="link-row">
+    <div class="link-meta">
+      <strong>For readers</strong>
+      <code>{{.Origin}}/p/{{.Page.PublicID}}</code>
+      <p class="note" id="draft-note" {{if .Page.IsPublished}} hidden{{end}}>{{template "draft-text"}}</p>
+    </div>
+    <button class="btn btn-quiet" type="button" data-copy="{{.Origin}}/p/{{.Page.PublicID}}">Скопировать</button>
+  </div>
+
+  <div class="link-row">
+    <div class="link-meta">
+      <strong>Секрет, для редактирования</strong>
+      <code>{{.Origin}}/edit/{{.Page.EditToken}}</code>
+      <p class="note">Не передавайте его другим. Это единственный способ управлять статьей.</p>
+    </div>
+    <button class="btn btn-quiet" type="button" data-copy="{{.Origin}}/edit/{{.Page.EditToken}}">Скопировать</button>
+  </div>
+
+  <form method="post" action="/delete/{{.Page.EditToken}}" class="danger-row" id="delete-form">
+    <span>Удалить статью</span>
+    <button class="btn btn-danger" type="submit">Удалить</button>
+  </form>
+
+  <p class="dialog-foot"><button class="btn btn-quiet" type="button" data-close>Закрыть</button></p>
+</dialog>
+
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+{{end}}
+
+{{define "draft-text"}}Пока статья находится в стадии черновика, по этой ссылке выводится сообщение "not found".{{end}}
+
+{{define "preview-fragment"}}{{.HTML}}<span id="reading-time" hx-swap-oob="true">{{.ReadingTime}}</span>{{end}}
+
+{{define "draft-note-oob"}}<p class="note" id="draft-note" hx-swap-oob="true" {{if .}} hidden{{end}}>{{template
+  "draft-text"}}</p>{{end}}
+
+{{define "scripts"}}
+<script src="/static/vendor/htmx-1.9.12.min.js"></script>
+<script src="/static/vendor/highlight-11.9.0.min.js"></script>
+<script src="/static/js/app.js"></script>
+<script src="/static/js/editor.js"></script>
+{{end}}

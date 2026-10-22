@@ -1,0 +1,32 @@
+{{define "title"}}{{if .Page.Title}}{{.Page.Title}}{{else}}Untitled{{end}} - Minipress{{end}}
+{{define "meta"}}{{if .Excerpt}}
+<meta name="description" content="{{.Excerpt}}">{{end}}{{end}}
+{{define "bodyclass"}}page-article{{end}}
+{{define "main"}}
+<header class="site-header">
+  <a class="brand" href="/">Minipress</a>
+  <button class="theme-toggle" type="button" data-theme-toggle>Темная</button>
+</header>
+
+<main class="article-wrap">
+  <article class="article">
+    <header class="article-head">
+      <h1>{{if .Page.Title}}{{.Page.Title}}{{else}}Untitled{{end}}</h1>
+      <p class="byline">
+        {{if .Page.Author}}<span>{{.Page.Author}}</span>{{end}}
+        <time datetime="{{.Page.CreatedAt.Format " 2006-01-02"}}">{{date .Page.CreatedAt}}</time>
+        <span>{{minutes .ReadingTime}} read</span>
+      </p>
+    </header>
+    <div class="article-body">{{.Content}}</div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <a href="/">Made with Minipress</a>
+</footer>
+{{end}}
+{{define "scripts"}}
+<script src="/static/vendor/highlight-11.9.0.min.js"></script>
+<script src="/static/js/app.js"></script>
+{{end}}
